@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="no" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Builder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    scale: {
+                        '102': '1.02',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Print.js -->
+    <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+    <link rel="stylesheet" href="https://printjs-4de6.kxcdn.com/print.min.css">
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+@media print {
+    body {
+        background: none !important;
+    }
+    .cv-preview {
+        box-shadow: none !important;
+    }
+    img {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+    .space-y-6 > * {
+        margin-bottom: 1rem;
+    }
+    .text-center {
+        text-align: left !important;
+    }
+    /* Additional adjustments for print layout */
+    .bg-white, .dark\:bg-gray-800 {
+        background-color: transparent !important;
+    }
+}
+</style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+    <div class="container mx-auto">
+        <!-- Dark mode toggle -->
+        <div class="fixed top-4 right-4 z-50">
+            <button id="darkModeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 transition-all duration-300">
+                <i class="fas fa-moon dark:text-yellow-300"></i>
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- CV Form -->
+            <div class="cv-form">
+                <h1 class="text-3xl font-bold mb-6 text-center">CV Builder</h1>
+                
+                <!-- Personal Information -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold mb-4">Personlig informasjon</h2>
+                    
+                    <!-- Profile Image Section -->
+                    <div class="mb-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="relative w-32 h-32 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700">
+                                <img id="profilePreview" src="" alt="" class="w-full h-full object-cover hidden">
+                                <div id="profilePlaceholder" class="absolute inset-0 flex items-center justify-center text-gray-400 dark:text-gray-500">
+                                    <i class="fas fa-user text-4xl"></i>
+                                </div>
+                            </div>
+                            <div class="flex flex-col space-y-2">
+                                <input type="file" id="profileImage" accept="image/*" class="hidden">
+                                <button type="button" id="uploadButton" class="px-4 py-2 rounded">
+                                    <i class="fas fa-upload mr-2"></i>Last opp bilde
+                                </button>
+                                <button type="button" id="removeImage" class="px-4 py-2 rounded bg-red-500 hover:bg-red-600 hidden">
+                                    <i class="fas fa-trash-alt mr-2"></i>Fjern bilde
+                                </button>
+                                <div class="flex items-center space-x-2 mt-2">
+                                    <input type="checkbox" id="showProfileImage" class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                                    <label for="showProfileImage" class="text-sm text-gray-700 dark:text-gray-300">Vis bilde i CV</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <input type="text" id="fullName" placeholder="Fullt navn" class="w-full p-3 rounded">
+                        <input type="text" id="title" placeholder="Tittel" class="w-full p-3 rounded">
+                        <input type="email" id="email" placeholder="E-post" class="w-full p-3 rounded">
+                        <input type="tel" id="phone" placeholder="Telefon" class="w-full p-3 rounded">
+                        <textarea id="about" placeholder="Om meg" class="w-full p-3 rounded h-32"></textarea>
+                    </div>
+                </div>
+
+                <!-- Work Experience -->
+                <div class="mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-semibold">Arbeidserfaring</h2>
+                        <button type="button" id="addWork" class="bg-purple-500 hover:bg-purple-600 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center">
+                            <i class="fas fa-plus mr-2"></i>Legg til
+                        </button>
+                    </div>
+                    <div id="workExperience" class="space-y-4"></div>
+                </div>
+
+                <!-- Education -->
+                <div class="mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-semibold">Utdanning</h2>
+                        <button type="button" id="addEducation" class="bg-purple-500 hover:bg-purple-600 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center">
+                            <i class="fas fa-plus mr-2"></i>Legg til
+                        </button>
+                    </div>
+                    <div id="education" class="space-y-4"></div>
+                </div>
+
+                <!-- Courses -->
+                <div class="mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-semibold">Kurs og Sertifiseringer</h2>
+                        <button type="button" id="addCourse" class="bg-purple-500 hover:bg-purple-600 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center">
+                            <i class="fas fa-plus mr-2"></i>Legg til
+                        </button>
+                    </div>
+                    <div id="courses" class="space-y-4"></div>
+                </div>
+
+                <!-- Projects -->
+                <div class="mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-semibold">Byggeprosjekter</h2>
+                        <button type="button" id="addProject" class="bg-purple-500 hover:bg-purple-600 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center">
+                            <i class="fas fa-plus mr-2"></i>Legg til
+                        </button>
+                    </div>
+                    <div id="projects" class="space-y-4"></div>
+                </div>
+
+                <!-- Export buttons -->
+                <div class="flex justify-end space-x-4 mb-4">
+                    <button id="updateCV" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center">
+                        <i class="fas fa-sync-alt mr-2"></i>
+                        Oppdater CV
+                    </button>
+                    <button id="exportPDF" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex items-center">
+                        <i class="fas fa-file-pdf mr-2"></i>
+                        Eksporter som PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- CV Preview -->
+            <div class="lg:sticky lg:top-8 h-fit">
+                <div id="cvPreview" class="cv-preview"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
